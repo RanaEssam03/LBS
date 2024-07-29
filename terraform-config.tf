@@ -227,6 +227,7 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.main.token
   cluster_ca_certificate = base64decode(aws_eks_cluster.main.certificate_authority[0].data)
 }
+
 # Deploy a sample container image to EKS
 resource "kubernetes_deployment" "lbs" {
   metadata {
@@ -253,7 +254,7 @@ resource "kubernetes_deployment" "lbs" {
       spec {
         container {
           name  = "lbs-container"
-          image = "ranaessam/lbs:latest"  # Updated image from Docker Hub
+          image = "ranaessam/lbs:latest"
           ports {
             container_port = 80
           }
