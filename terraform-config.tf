@@ -35,7 +35,7 @@ resource "aws_subnet" "rana_first_subnet" {
 resource "aws_subnet" "rana_second_subnet" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.2.0/24"
-  availability_zone = "us-east-1a"
+  availability_zone = "us-east-1b"
 
   tags = {
     Name = "second-subnet"
@@ -131,7 +131,7 @@ resource "aws_security_group" "eks" {
 
 # Create an IAM role for EKS
 resource "aws_iam_role" "eks" {
-  name = "eks-cluster-role"
+  name = "eks-cluster-role-rana"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -178,9 +178,10 @@ resource "aws_iam_role_policy_attachment" "eks_node_group_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "eks_node_group_cni" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSCNIPolicy"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"  # Updated policy ARN
   role     = aws_iam_role.eks_node_group.name
 }
+
 
 # Create EKS Cluster
 resource "aws_eks_cluster" "main" {
@@ -255,7 +256,7 @@ resource "kubernetes_deployment" "lbs" {
         container {
           name  = "lbs-container"
           image = "ranaessam/lbs:latest"
-          ports {
+          port {
             container_port = 80
           }
         }
