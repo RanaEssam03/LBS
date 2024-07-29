@@ -171,14 +171,17 @@ resource "aws_iam_role" "eks_node_group" {
   })
 }
 
-# Attach the necessary policies to the EKS Node Group role
 resource "aws_iam_role_policy_attachment" "eks_node_group_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role     = aws_iam_role.eks_node_group.name
 }
 
+resource "aws_iam_role_policy_attachment" "eks_node_group_ecr" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  role     = aws_iam_role.eks_node_group.name
+}
 resource "aws_iam_role_policy_attachment" "eks_node_group_cni" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"  # Updated policy ARN
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"  # Ensure this is the correct policy
   role     = aws_iam_role.eks_node_group.name
 }
 
